@@ -73,12 +73,6 @@ coverage.xml
 *.pid
 *.pid.lock
 
-# Model files (if storing locally)
-models/
-*.pt
-*.bin
-*.onnx
-
 # Ignore VSCode test outputs or FastAPI reload artifacts
 *.bak
 __test__/

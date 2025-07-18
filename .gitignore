@@ -1,0 +1,84 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.venv.bak/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment variables & secrets
+.env
+.env.*
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Audio/Media files
+*.wav
+*.mp3
+*.ogg
+*.flac
+*.m4a
+*.opus
+
+# Database
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# Mypy / Pylint
+.mypy_cache/
+.dmypy.json
+.pyre/
+pylint-report.txt
+
+# Coverage reports
+.coverage
+htmlcov/
+coverage.xml
+
+# Jupyter notebooks (optional)
+.ipynb_checkpoints/
+
+# Docker
+*.pid
+*.pid.lock
+
+# Model files (if storing locally)
+models/
+*.pt
+*.bin
+*.onnx
+
+# Ignore VSCode test outputs or FastAPI reload artifacts
+*.bak
+__test__/

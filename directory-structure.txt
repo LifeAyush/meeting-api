@@ -1,0 +1,42 @@
+.
+├── app/
+│   ├── api/
+│   │   ├── v1/
+│   │   │   ├── routes/
+│   │   │   │   ├── meetings.py
+│   │   │   │   ├── transcripts.py
+│   │   │   │   └── summary.py
+│   │   │   └── websocket.py
+│   │   └── deps.py
+│   ├── core/
+│   │   ├── config.py           # Settings, env vars, secrets
+│   │   ├── llm.py              # Calls to GPT-4o or LLM provider
+│   │   └── whisper.py          # Wrapper around Whisper model
+│   ├── services/
+│   │   ├── summarizer.py       # Extracts summary + action items
+│   │   └── diarization.py      # Optional: speaker separation logic
+│   ├── models/
+│   │   ├── base.py             # SQLAlchemy base
+│   │   ├── meeting.py
+│   │   ├── transcript.py
+│   │   └── summary.py
+│   ├── schemas/
+│   │   ├── meeting.py
+│   │   ├── transcript.py
+│   │   └── summary.py
+│   ├── db/
+│   │   ├── session.py
+│   │   └── crud/
+│   │       ├── meeting.py
+│   │       ├── transcript.py
+│   │       └── summary.py
+│   ├── utils/
+│   │   ├── websocket_manager.py
+│   │   └── audio_utils.py      # Chunking, streaming helpers
+│   ├── main.py                 # FastAPI app instance
+│   └── websocket_handler.py    # Event logic for WebSocket
+│
+├── .env                        # Env variables
+├── requirements.txt
+├── Dockerfile
+└── alembic/                    # For DB migrations (optional)

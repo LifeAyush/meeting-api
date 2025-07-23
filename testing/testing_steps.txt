@@ -1,0 +1,10 @@
+1. start app -> uvicorn app.main:app --reload
+2. create meeting -> curl -X POST http://localhost:8000/api/v1/meetings
+                  -> response: {
+                        "id": "123e4567-e89b-12d3-a456-426614174000",
+                        ...
+                    } copy id -> meeting id
+
+3. Terminal 1 run the testing script for first audio file -> python test_client.py 123... audio/user1.wav
+4. Terminal 2 run the testing script for first audio file -> python test_client.py 123... audio/user2.wav
+

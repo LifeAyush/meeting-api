@@ -1,3 +1,4 @@
 sqlalchemy
 pydantic
 fastapi
+openai-whisper

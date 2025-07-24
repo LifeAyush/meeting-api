@@ -4,7 +4,7 @@ from app.models.transcript import Transcript
 from app.schemas.transcript import TranscriptCreate
 
 def create_transcript(db: Session, transcript: TranscriptCreate) -> Transcript:
-    db_transcript = Transcript(**transcript.dict())
+    db_transcript = Transcript(**transcript.model_dump())
     db.add(db_transcript)
     db.commit()
     db.refresh(db_transcript)

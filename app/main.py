@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.session import init_db
+from app.api.v1.routes import summary
 from app.api.v1.routes import meetings
 from app.api.v1.routes import transcripts
 from app.api.v1.websocket import websocket_endpoint
@@ -9,6 +10,7 @@ from app.api.v1.websocket import websocket_endpoint
 def register_routes(app: FastAPI):
     app.include_router(meetings.router, prefix="/api/v1/meetings")
     app.include_router(transcripts.router, prefix="/api/v1/transcripts")
+    app.include_router(summary.router, prefix="/api/v1/summary")
     app.add_api_websocket_route("/ws/meetings/{meeting_id}", websocket_endpoint)
 
 def register_middlewares(app: FastAPI):

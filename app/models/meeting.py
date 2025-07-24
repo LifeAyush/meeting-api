@@ -11,4 +11,6 @@ class Meeting(Base):
     title = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     transcripts = relationship("Transcript", back_populates="meeting", cascade="all, delete-orphan")
+    summary = relationship("Summary", uselist=False, back_populates="meeting")
+
 

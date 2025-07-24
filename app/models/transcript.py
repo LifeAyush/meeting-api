@@ -10,7 +10,7 @@ class Transcript(Base):
     id = Column(Integer, primary_key=True, index=True)
     meeting_id = Column(String, ForeignKey("meetings.id"), nullable=False)
     speaker = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.now())
     text = Column(Text, nullable=False)
 
     meeting = relationship("Meeting", back_populates="transcripts")

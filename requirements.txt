@@ -4,3 +4,4 @@ fastapi
 openai-whisper
 resemblyzer
 scikit-learn
+openai

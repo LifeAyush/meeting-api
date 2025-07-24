@@ -1,8 +1,9 @@
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, DateTime
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 from app.models.base import Base
+
 
 class Meeting(Base):
     __tablename__ = "meetings"

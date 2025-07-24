@@ -1,13 +1,14 @@
-from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel
 
-class MeetingSummaryCreate(BaseModel):
-    meeting_id: UUID
+
+class SummaryCreate(BaseModel):
+    meeting_id: str
     summary_text: str
 
-class MeetingSummaryOut(MeetingSummaryCreate):
-    id: UUID
+
+class SummaryOut(SummaryCreate):
+    id: int
     created_at: datetime
 
     class Config:

@@ -1,12 +1,12 @@
 from datetime import datetime
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
-class MeetingSummary(Base):
-    __tablename__ = "meeting_summaries"
+
+class Summary(Base):
+    __tablename__ = "summaries"
 
     id = Column(Integer, primary_key=True, index=True)
     meeting_id = Column(String, ForeignKey("meetings.id"), nullable=False)

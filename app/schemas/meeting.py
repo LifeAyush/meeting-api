@@ -1,8 +1,10 @@
-from pydantic import BaseModel
 from datetime import datetime
+from pydantic import BaseModel
+
 
 class MeetingCreate(BaseModel):
     title: str
+
 
 class MeetingOut(BaseModel):
     id: str

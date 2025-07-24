@@ -1,22 +1,25 @@
 import json
-import whisper
-import tempfile
 import numpy as np
-from uuid import uuid4
+import tempfile
+import whisper
 from datetime import datetime
-from sqlalchemy.orm import Session
 from fastapi import WebSocket, WebSocketDisconnect
+from sqlalchemy.orm import Session
+from uuid import uuid4
 
-from app.db.session import get_db
 from app.crud.transcript import create_transcript
-from app.services.diarization import get_speaker_embeddings
+from app.db.session import get_db
 from app.schemas.transcript import TranscriptCreate
+from app.services.diarization import get_speaker_embeddings
+
 
 model = whisper.load_model("base")
 active_connections = {}
 speaker_buffers = {}
 
-async def websocket_endpoint(websocket: WebSocket, meeting_id: str):
+
+async def websocket_endpoint(websocket: WebSocket, meeting_id: str) -> None:
+    """WebSocket endpoint for real-time audio transcription and broadcasting."""
     await websocket.accept()
 
     if meeting_id not in active_connections:
@@ -26,7 +29,7 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str):
     try:
         while True:
             data = await websocket.receive_bytes()
-            
+
             speaker_embedding = get_speaker_embeddings(data)
             matched_speaker = None
             for speaker_id, emb_list in speaker_buffers.items():
@@ -67,8 +70,9 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str):
     except WebSocketDisconnect:
         active_connections[meeting_id].remove(websocket)
 
-async def transcribe_audio(audio_bytes: bytes):
-    # Write audio to a temporary WAV file
+
+async def transcribe_audio(audio_bytes: bytes) -> str:
+    """Transcribe audio bytes to text using the Whisper model."""
     with tempfile.NamedTemporaryFile(suffix=".wav") as f:
         f.write(audio_bytes)
         f.flush()
@@ -77,6 +81,8 @@ async def transcribe_audio(audio_bytes: bytes):
 
     return text.strip()
 
-async def broadcast(meeting_id: str, message: dict):
+
+async def broadcast(meeting_id: str, message: dict) -> None:
+    """Broadcast a message to all active WebSocket connections for a meeting."""
     for connection in active_connections.get(meeting_id, []):
         await connection.send_text(json.dumps(message))

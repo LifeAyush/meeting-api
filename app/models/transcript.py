@@ -1,8 +1,9 @@
 from datetime import datetime
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey, Text, DateTime
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
+
 
 class Transcript(Base):
     __tablename__ = "transcripts"

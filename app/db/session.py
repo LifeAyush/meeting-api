@@ -1,10 +1,10 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.models.base import Base
 
-# Load from .env or hardcode for now
+
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./meetings.db")
 
 engine = create_engine(
@@ -13,14 +13,18 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def get_db():
+    """Yield a SQLAlchemy session for dependency injection in FastAPI routes."""
     db: Session = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-        
-def init_db():
+
+
+def init_db() -> None:
+    """Create all database tables based on the SQLAlchemy models."""
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
     print("Done.")

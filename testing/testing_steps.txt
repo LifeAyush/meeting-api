@@ -8,3 +8,31 @@
 3. Terminal 1 run the testing script for first audio file -> python test_client.py 123... audio/user1.wav
 4. Terminal 2 run the testing script for first audio file -> python test_client.py 123... audio/user2.wav
 
+
+
+launch.json
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch FastAPI with Gunicorn",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "gunicorn",
+      "args": [
+        "-b", "0.0.0.0:8000",
+        "app.main:app",
+        "-k", "uvicorn.workers.UvicornWorker",
+        "--timeout", "600",
+        "--preload"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "OBJC_DISABLE_INITIALIZE_FORK_SAFETY": "YES"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ]
+}

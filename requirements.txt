@@ -5,3 +5,5 @@ openai-whisper
 resemblyzer
 scikit-learn
 openai
+uvicorn
+gunicorn

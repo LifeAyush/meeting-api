@@ -9,7 +9,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 from app.db.session import get_db
 from app.crud.transcript import create_transcript
-from app.services.diarization import get_embedding
+from app.services.diarization import get_speaker_embeddings
 from app.schemas.transcript import TranscriptCreate
 
 model = whisper.load_model("base")
@@ -27,7 +27,7 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str):
         while True:
             data = await websocket.receive_bytes()
             
-            speaker_embedding = get_embedding(data)
+            speaker_embedding = get_speaker_embeddings(data)
             matched_speaker = None
             for speaker_id, emb_list in speaker_buffers.items():
                 sim = np.inner(speaker_embedding, np.mean(emb_list, axis=0))

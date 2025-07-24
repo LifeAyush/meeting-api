@@ -2,3 +2,5 @@ sqlalchemy
 pydantic
 fastapi
 openai-whisper
+resemblyzer
+scikit-learn

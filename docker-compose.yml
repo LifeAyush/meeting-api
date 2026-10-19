@@ -1,0 +1,20 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      WHISPER_MODEL: tiny
+      SUMMARY_MODE: mock
+      DATABASE_URL: sqlite:////data/meetings.db
+    volumes:
+      - meeting-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+volumes:
+  meeting-data:

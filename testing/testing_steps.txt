@@ -1,38 +1,19 @@
-1. start app -> uvicorn app.main:app --reload
-2. create meeting -> curl -X POST http://localhost:8000/api/v1/meetings
-                  -> response: {
-                        "id": "123e4567-e89b-12d3-a456-426614174000",
-                        ...
-                    } copy id -> meeting id
+Manual checks (prefer scripts/demo.py for the happy path):
 
-3. Terminal 1 run the testing script for first audio file -> python test_client.py 123... audio/user1.wav
-4. Terminal 2 run the testing script for first audio file -> python test_client.py 123... audio/user2.wav
+1. Start the API:
+   uvicorn app.main:app --reload
 
+2. Create a meeting:
+   curl -s -X POST http://localhost:8000/api/v1/meetings/ \
+     -H 'Content-Type: application/json' \
+     -d '{"title":"Manual check"}'
 
+3. Upload a WAV over the WebSocket:
+   python testing/websocket_audio_chunk_upload_check.py <meeting_id> fixtures/demo.wav
 
-launch.json
+4. List transcripts / summarize:
+   curl -s http://localhost:8000/api/v1/transcripts/<meeting_id>
+   curl -s -X POST http://localhost:8000/api/v1/summary/<meeting_id>
 
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Launch FastAPI with Gunicorn",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "gunicorn",
-      "args": [
-        "-b", "0.0.0.0:8000",
-        "app.main:app",
-        "-k", "uvicorn.workers.UvicornWorker",
-        "--timeout", "600",
-        "--preload"
-      ],
-      "env": {
-        "PYTHONUNBUFFERED": "1",
-        "OBJC_DISABLE_INITIALIZE_FORK_SAFETY": "YES"
-      },
-      "console": "integratedTerminal",
-      "justMyCode": false
-    }
-  ]
-}
+Or run the one-shot demo against a running server:
+   python scripts/demo.py

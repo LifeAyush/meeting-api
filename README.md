@@ -1,34 +1,102 @@
 # Meeting API
 
+[![ci](https://github.com/LifeAyush/meeting-api/actions/workflows/ci.yml/badge.svg)](https://github.com/LifeAyush/meeting-api/actions/workflows/ci.yml)
+
 https://github.com/LifeAyush/meeting-api
 
-Meeting API that streams audio, transcribes it with Whisper, identifies speakers, and writes a summary. Clients upload audio over a WebSocket; the service stores transcripts and can summarize a meeting.
+FastAPI service that accepts meeting audio over a WebSocket, transcribes it with Whisper, matches speakers with Resemblyzer voice embeddings, stores transcripts in SQLite, and produces a summary with action items.
+
+The server does **not** require a GPU. Demo defaults use Whisper `tiny` and `SUMMARY_MODE=mock` (no OpenAI key).
 
 ## What it does
 
-- **Stream audio.** Send raw audio bytes to `ws://localhost:8000/ws/meetings/{meeting_id}` (`app/api/v1/websocket.py`).
-- **Whisper transcription.** Each upload is transcribed with the Whisper `base` model.
-- **Speaker identification.** Resemblyzer voice embeddings match a chunk to a known speaker, or start a new speaker id.
-- **Summary.** `app/services/summarizer.py` joins a meeting's transcripts and asks OpenAI (`gpt-4`) for a summary, then stores it.
-- **REST API.** Meeting, transcript, and summary handlers live in `app/api/v1/routes/`. The app wires those routers and the WebSocket in `app/main.py`.
+- **REST** — create/get meetings, list transcripts, create/get summaries (`/api/v1/...`)
+- **Stream audio** — `ws://localhost:8000/ws/meetings/{meeting_id}` accepts raw WAV bytes
+- **Whisper transcription** — model from `WHISPER_MODEL` (default `tiny`; use `base` for higher quality)
+- **Speaker matching** — Resemblyzer embeddings compared per meeting (not full pyannote diarization)
+- **Summary** — mock template by default, or OpenAI JSON summary + action items when `SUMMARY_MODE=openai`
 
-## Run
+## Requirements
 
-Dependencies are listed in `requirements.txt`. The process entrypoint is `app/main.py` (`app = create_app()`).
+- Python 3.11+
+- [ffmpeg](https://ffmpeg.org/) on `PATH` (Whisper)
+- Optional: `OPENAI_API_KEY` when using OpenAI summaries
+
+## Quick start
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
+python scripts/gen_fixture_wav.py
 uvicorn app.main:app --reload
 ```
 
-The database defaults to SQLite at `sqlite:///./meetings.db`. Override it with `DATABASE_URL` (`app/db/session.py`). Summarization uses the OpenAI client, so set `OPENAI_API_KEY` before generating a summary.
-
-`testing/websocket_audio_chunk_upload_check.py` uploads one audio file to the meeting WebSocket:
+In another terminal:
 
 ```bash
-python testing/websocket_audio_chunk_upload_check.py <meeting_id> <audio_file>
+python scripts/demo.py
 ```
 
-Tests were added by AniketMonty.
+That creates a meeting, uploads `fixtures/demo.wav`, prints transcripts, and returns a mock summary with action items.
+
+### Docker
+
+```bash
+python scripts/gen_fixture_wav.py
+docker compose up --build
+python scripts/demo.py
+```
+
+Health: `GET /health` → `{"status":"ok"}`.
+
+## Configuration
+
+See [`.env.example`](.env.example).
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `DATABASE_URL` | `sqlite:///./meetings.db` | SQLAlchemy URL |
+| `WHISPER_MODEL` | `tiny` | Whisper checkpoint name |
+| `SUMMARY_MODE` | `mock` | `mock` or `openai` |
+| `OPENAI_API_KEY` | empty | Required for `SUMMARY_MODE=openai` |
+
+## API sketch
+
+```bash
+# Create meeting
+curl -s -X POST http://localhost:8000/api/v1/meetings/ \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Weekly sync"}'
+
+# List transcripts
+curl -s http://localhost:8000/api/v1/transcripts/<meeting_id>
+
+# Summarize (POST) / fetch (GET)
+curl -s -X POST http://localhost:8000/api/v1/summary/<meeting_id>
+```
+
+Summary JSON shape:
+
+```json
+{
+  "id": 1,
+  "meeting_id": "...",
+  "summary_text": "...",
+  "action_items": [{"owner": "spk1", "task": "...", "due_hint": "this week"}],
+  "created_at": "..."
+}
+```
+
+## Checks
+
+```bash
+pytest -q
+```
+
+CI runs pytest with Whisper/encoder boundaries mocked (no large model download required for the default suite). A manual WebSocket uploader remains at `testing/websocket_audio_chunk_upload_check.py` (originally contributed in the AniketMonty test commit).
+
+## License
+
+[MIT](LICENSE)

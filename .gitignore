@@ -12,6 +12,7 @@ venv/
 ENV/
 env/
 .venv.bak/
+.teststubs/
 
 # Distribution / packaging
 build/
@@ -25,6 +26,7 @@ pip-delete-this-directory.txt
 # Environment variables & secrets
 .env
 .env.*
+!.env.example
 
 # Editor/IDE files
 .vscode/
@@ -43,6 +45,7 @@ Thumbs.db
 *.flac
 *.m4a
 *.opus
+!fixtures/*.wav
 
 # Database
 *.sqlite3

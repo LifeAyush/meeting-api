@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.models.base import Base
@@ -11,6 +12,7 @@ class Summary(Base):
     id = Column(Integer, primary_key=True, index=True)
     meeting_id = Column(String, ForeignKey("meetings.id"), nullable=False)
     summary_text = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.now())
+    action_items_json = Column(Text, nullable=False, default="[]")
+    created_at = Column(DateTime, default=datetime.now)
 
     meeting = relationship("Meeting", back_populates="summary")

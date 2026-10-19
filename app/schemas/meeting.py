@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel
+
+from pydantic import BaseModel, ConfigDict
 
 
 class MeetingCreate(BaseModel):
@@ -7,9 +8,8 @@ class MeetingCreate(BaseModel):
 
 
 class MeetingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     title: str
     created_at: datetime
-
-    class Config:
-        from_attributes = True

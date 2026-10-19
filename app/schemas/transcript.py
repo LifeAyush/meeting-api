@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel
+
+from pydantic import BaseModel, ConfigDict
 
 
 class TranscriptBase(BaseModel):
@@ -13,8 +14,7 @@ class TranscriptCreate(TranscriptBase):
 
 
 class TranscriptRead(TranscriptBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     meeting_id: str
-
-    class Config:
-        from_attributes = True

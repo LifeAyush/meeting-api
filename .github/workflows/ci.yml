@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,10 +16,15 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install system deps
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+        timeout-minutes: 8
+        run: |
+          sudo apt-get -o Acquire::Retries=3 update
+          sudo apt-get -o Acquire::Retries=3 install -y --no-install-recommends ffmpeg
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
+          # CPU-only torch: the default Linux wheel pulls ~2 GB of CUDA libraries.
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt
       - name: Generate fixture WAV
         run: python scripts/gen_fixture_wav.py

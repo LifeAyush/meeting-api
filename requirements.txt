@@ -4,7 +4,7 @@ gunicorn==23.0.0
 sqlalchemy==2.0.36
 pydantic==2.10.4
 openai==1.58.1
-openai-whisper==20240930
+openai-whisper==20250625
 resemblyzer==0.1.4
 scikit-learn==1.5.2
 numpy==2.1.3

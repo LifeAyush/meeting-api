@@ -100,3 +100,7 @@ CI runs pytest with Whisper/encoder boundaries mocked (no large model download r
 ## License
 
 [MIT](LICENSE)
+
+---
+
+Building something similar, or stuck on streaming audio or speech pipelines? Happy to dig in with you: [grab 30 min](https://cal.com/ayush-patil-s2zg3v/30min).
